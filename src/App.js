@@ -14,34 +14,124 @@ import Reviews from "./pages/review/Reviews";
 import Admin from "./pages/admin/Admin";
 import Profile from "./pages/profile/Profile";
 import { onAuthStateChanged } from "firebase/auth";
-import { useDispatch } from "react-redux";
-import { getUserAction } from "./pages/registration-login/userAction";
 import { auth } from "./config/firebase-config";
+import { useDispatch } from "react-redux";
+import { getUserProfile } from "./pages/registration-login/userAction";
+import { PrivateRoute } from "./components/private-route/PrivateRoute";
+import AddProduct from "./pages/products/AddProduct";
+import { useEffect } from "react";
+import { fetchAllCategoryAction } from "./pages/category/catAction";
+import { fetchAllProductAction } from "./pages/products/productAction";
 
 function App() {
-  const dispatch = useDispatch()
-  onAuthStateChanged(auth, (user) =>{
-    if(user?.uid){
-      //get user data from the database and addd to the store
-      dispatch(getUserAction(user?.uid))
+  const dispatch = useDispatch();
+  onAuthStateChanged(auth, (user) => {
+    if (user?.uid) {
+      // get user data from the database and add to the redux
+      dispatch(getUserProfile(user?.uid));
     }
-  })
+  });
+
+  //fetch anything you need in the multipl places of the app
+  useEffect(() => {
+    dispatch(fetchAllCategoryAction());
+    dispatch(fetchAllProductAction());
+
+  });
   return (
     <div className="">
       <Routes>
         <Route path="/" element={<Login />} />
 
         {/* // private routes  */}
-        <Route path="/registration" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/categories" element={<Category />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/payment-options" element={<PaymentOptions />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/buyers" element={<Buyers />} />
-        <Route path="/reviews" element={<Reviews />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/registration"
+          element={
+            <PrivateRoute>
+              <Register />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <PrivateRoute>
+              <Category />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <PrivateRoute>
+              <Products />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/product/new"
+          element={
+            <PrivateRoute>
+              <AddProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payment-options"
+          element={
+            <PrivateRoute>
+              <PaymentOptions />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <PrivateRoute>
+              <Orders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/buyers"
+          element={
+            <PrivateRoute>
+              <Buyers />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/reviews"
+          element={
+            <PrivateRoute>
+              <Reviews />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <Admin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
       </Routes>
 
       <ToastContainer />
